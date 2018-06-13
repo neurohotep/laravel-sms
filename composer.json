@@ -1,0 +1,25 @@
+{
+    "name": "neirototam/mts-communicator",
+    "license": "MIT",
+    "version": "0.1.0",
+    "authors": [
+        {
+            "name": "neirototam",
+            "email": "umertasov.d@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Neirototam\\MtsCommunicator\\": "src/"
+        }
+    },
+    "extra": {
+    "laravel": {
+        "providers": [
+            "Neirototam\\MtsCommunicator\\SmsServiceProvider"
+        ]
+    }
+}
+}
