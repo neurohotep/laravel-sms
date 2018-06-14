@@ -30,7 +30,8 @@ class SmsServiceProvider extends ServiceProvider
             $config = $app->make('config');
             $login = $config->get('login');
             $password = $config->get('password');
-            return new MtsSms($login, $password);
+            $user_group = $config->get('user_group');
+            return new MtsSms($login, $password, $user_group);
         });
     }
 
