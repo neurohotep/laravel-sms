@@ -3,6 +3,7 @@
 namespace Neurohotep\LaravelSms;
 
 use Illuminate\Support\ServiceProvider;
+use Neurohotep\LaravelSms\Drivers\SmsContract;
 
 class SmsServiceProvider extends ServiceProvider
 {
@@ -25,13 +26,9 @@ class SmsServiceProvider extends ServiceProvider
      */
     public function register() {
         $this->mergeConfigFrom( __DIR__.'/../config/sms.php', 'sms');
-        
-        $this->app->singleton('sms', function($app) {
-            $config = $app->make('config');
-            $login = $config->get('login');
-            $password = $config->get('password');
-            $user_group = $config->get('user_group');
-            return new MtsSms($login, $password, $user_group);
+
+        $this->app->singleton(SmsContract::class, function ($app) {
+            return $app->make(SmsManager::class)->connection();
         });
     }
 

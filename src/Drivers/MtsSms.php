@@ -1,11 +1,11 @@
 <?php
 
-namespace Neurohotep\LaravelSms;
+namespace Neurohotep\LaravelSms\Drivers;
 
 use SoapClient;
 use SoapFault;
 
-class MtsSms
+class MtsSms extends SmsDriver
 {
     private $login, $password, $default_user_group, $wsdl;
 
