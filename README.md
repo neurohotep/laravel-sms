@@ -26,3 +26,6 @@ For sending single message:
 ```php
 Sms::send('79123456789', 'Hello);  
  ```
+ 
+ ## License
+ [MIT License](https://github.com/neurohotep/laravel-sms/blob/master/LICENSE "MIT License")
