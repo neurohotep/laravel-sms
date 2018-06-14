@@ -1,33 +1,37 @@
 <?php
 
-namespace Neirototam\MtsCommunicator;
+namespace Neurohotep\LaravelSms;
 
 use SoapClient;
 use SoapFault;
 
 class MtsSms
 {
-    private $login;
-    private $password;
+    private $login, $password, $default_user_group, $wsdl;
 
-    public function __construct($login, $password)
+    public function __construct($login, $password, $user_group)
     {
         $this->login = $login;
         $this->password = $password;
+        $this->default_user_group = $user_group;
+        $this->wsdl = new SoapClient('https://www.mcommunicator.ru/m2m/m2m_api.asmx?WSDL', [
+            'soap_version' => SOAP_1_1
+        ]);
     }
 
-    public function send(string $phone = "", string $message = "")
+    /**
+     * Sending a single message
+     *
+     * @param string $phone
+     * @param string $message
+     * @return bool|mixed
+     */
+    public function send(string $phone = '', string $message = '')
     {
         if (!empty($phone) && !empty($message)) {
             try {
-                $phone = $this->phoneParse($phone);
-
-                $wsdl = new SoapClient('https://www.mcommunicator.ru/m2m/m2m_api.asmx?WSDL', [
-                    'soap_version' => SOAP_1_1
-                ]);
-
-                return $wsdl->SendMessage([
-                    'msid' => $phone,
+                return $this->wsdl->SendMessage([
+                    'msid' => $this->phoneParse($phone),
                     'message' => $message,
                     'login' => $this->login,
                     'password' => $this->password,
@@ -35,35 +39,7 @@ class MtsSms
                     'exceptions' => 1
                 ]);
             } catch (SoapFault $e) {
-                //trigger_error('Ошибка авторизации или внутренняя ошибка сервера.', E_ERROR);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public function sendMultiple(array $phones, string $message = "")
-    {
-        if (!empty($phones) && !empty($message)) {
-            try {
-                $phones = array_map(function ($phone) {
-                    return $this->phoneParse($phone);
-                }, $phones);
-
-                $wsdl = new SoapClient("https://www.mcommunicator.ru/m2m/m2m_api.asmx?WSDL", [
-                    'soap_version' => SOAP_1_1
-                ]);
-
-                return $wsdl->SendMessages([
-                    'msids' => $phones,
-                    'message' => $message,
-                    'login' => $this->login,
-                    'password' => $this->password,
-                    'trace' => 1,
-                    'exceptions' => 1
-                ]);
-            } catch (SoapFault $e) {
-                //trigger_error('Ошибка авторизации или внутренняя ошибка сервера.', E_ERROR);
+                // add handler
                 return false;
             } catch (\Exception $e) {
                 return false;
@@ -72,36 +48,87 @@ class MtsSms
         return false;
     }
 
-    public function addUser(string $username = '', string $phone = '', string $email = '')
+    /**
+     * Sending the same messages to several subscribers
+     * 
+     * @param array $phones
+     * @param string $message
+     * @return bool|mixed
+     */
+    public function sendMultiple(array $phones, string $message = '')
     {
-        if (!empty($phone) && !empty($username) && !empty($email)) {
+        if (!empty($phones) && !empty($message)) {
             try {
-                $wsdl = new SoapClient('https://www.mcommunicator.ru/m2m/m2m_api.asmx?WSDL', [
-                    'soap_version' => SOAP_1_1
-                ]);
+                $phones = array_map(function ($phone) {
+                    return $this->phoneParse($phone);
+                }, $phones);
 
-                $phone = $this->phoneParse($phone);
-                
-                return $wsdl->AddUser([
-                    'userName' => $username,
-                    'userMSID' => $phone,
-                    'userEmail' => $email,
-                    'accessLevel' => 'BaseUser',
-                    'userGroupId' => 29527,
-                    'webAccessEnabled' => false,
+                return $this->wsdl->SendMessages([
+                    'msids' => $phones,
+                    'message' => $message,
                     'login' => $this->login,
                     'password' => $this->password,
                     'trace' => 1,
                     'exceptions' => 1
                 ]);
             } catch (SoapFault $e) {
-                //trigger_error('Ошибка авторизации или внутренняя ошибка сервера.', E_ERROR);
+                return false;
+            } catch (\Exception $e) {
                 return false;
             }
         }
         return false;
     }
 
+    /**
+     * User creation function
+     * 
+     * @param string $username
+     * @param string $phone
+     * @param string $email
+     * @param null $user_group
+     * @return bool|mixed
+     */
+    public function addUser(string $username = '', string $phone = '', string $email = '', $user_group = null, $base_user = 'BaseUser')
+    {
+        if (empty($phone) || empty($username)) {
+            return false;
+        }
+
+        if (!in_array($base_user, ['Administrator', 'Operator', 'BaseUser'])) {
+            return false;
+        }
+
+        try {
+            if (!$user_group) {
+                $user_group = $this->default_user_group;
+            }
+
+            return $this->wsdl->AddUser([
+                'userName' => $username,
+                'userMSID' => $this->phoneParse($phone),
+                'userEmail' => $email,
+                'accessLevel' => $base_user,
+                'userGroupId' => $user_group,
+                'webAccessEnabled' => false,
+                'login' => $this->login,
+                'password' => $this->password,
+                'trace' => 1,
+                'exceptions' => 1
+            ]);
+        } catch (SoapFault $e) {
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Parsing phone number
+     * 
+     * @param string $phone
+     * @return string
+    */
     private function phoneParse($phone = '')
     {
         $phone = preg_replace('/[^0-9]/', '', $phone);

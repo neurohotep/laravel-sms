@@ -1,6 +1,6 @@
 <?php
 
-namespace Neirototam\MtsCommunicator;
+namespace Neurohotep\LaravelSms;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -14,8 +14,8 @@ class SmsServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/mts.php' => config_path('mtscommunicator.php'),
-        ], 'mtscommunicator');
+            __DIR__.'/../config/sms.php' => config_path('sms.php'),
+        ], 'sms');
     }
 
     /**
@@ -24,9 +24,9 @@ class SmsServiceProvider extends ServiceProvider
      * @return void
      */
     public function register() {
-        $this->mergeConfigFrom( __DIR__.'/../config/mts.php', 'mtscommunicator');
+        $this->mergeConfigFrom( __DIR__.'/../config/sms.php', 'sms');
         
-        $this->app->singleton('mtscommunicator', function($app) {
+        $this->app->singleton('sms', function($app) {
             $config = $app->make('config');
             $login = $config->get('login');
             $password = $config->get('password');
@@ -35,6 +35,6 @@ class SmsServiceProvider extends ServiceProvider
     }
 
     public function provides() {
-        return ['mtscommunicator'];
+        return ['sms'];
     }
 }

@@ -1,10 +1,10 @@
 {
-    "name": "neirototam/mts-communicator",
+    "name": "neurohotep/laravel-sms",
     "license": "MIT",
     "version": "0.1.0",
     "authors": [
         {
-            "name": "neirototam",
+            "name": "neurohotep",
             "email": "umertasov.d@gmail.com"
         }
     ],
@@ -12,14 +12,17 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Neirototam\\MtsCommunicator\\": "src/"
+            "Neurohotep\\LaravelSms\\": "src/"
         }
     },
     "extra": {
-    "laravel": {
-        "providers": [
-            "Neirototam\\MtsCommunicator\\SmsServiceProvider"
-        ]
+        "laravel": {
+            "providers": [
+                "Neurohotep\\LaravelSms\\SmsServiceProvider"
+            ],
+            "aliases": {
+                "Sms": "Neurohotep\\LaravelSms\\SmsFacade"
+            }
+        }
     }
-}
 }
