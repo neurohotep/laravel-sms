@@ -27,7 +27,7 @@ class SmsServiceProvider extends ServiceProvider
     public function register() {
         $this->mergeConfigFrom( __DIR__.'/../config/sms.php', 'sms');
 
-        $this->app->singleton(SmsContract::class, function ($app) {
+        $this->app->singleton('sms', function ($app) {
             return $app->make(SmsManager::class)->connection();
         });
     }
