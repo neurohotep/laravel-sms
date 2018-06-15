@@ -1,12 +1,17 @@
 # Laravel SMS
 Simple Laravel 5 package for sending SMS.
 
+## Requirements
+
+- Laravel >= 5.5
+- PHP >= 7.0
+
 ## Installation
+
+The best way to install this package is quickly and easily with <a href="https://getcomposer.org">Composer</a>.
+
 <ol>
-  <li>Edit the composer.json add to the require array & run composer update<br>
-      <pre><code> "neurohotep/laravel-sms": "dev-master" </code></pre>
-      <pre><code> composer update </code></pre>
-      or just run
+  <li>To install the most recent version, run the following command
       <pre><code> composer require neurohotep/laraver-sms </code></pre>
   </li>
   
@@ -19,11 +24,10 @@ Simple Laravel 5 package for sending SMS.
   </li>
 </ol>
 
-## Usage
-
-For sending single message:
+## Code Examples
 
 ```php
+// send a single message
 Sms::send('79123456789', 'Hello);  
  ```
  
