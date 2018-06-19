@@ -9,5 +9,10 @@ return [
             'password' => env('MTS_SMS_PASSWORD'),
             'user_group' => null
         ],
+        'smsaero' => [
+            'driver' => 'smsaero',
+            'login' => env('SMSAERO_SMS_LOGIN'),
+            'password' => env('SMSAERO_SMS_PASSWORD')
+        ]
     ]
 ];

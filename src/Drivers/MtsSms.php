@@ -28,11 +28,12 @@ class MtsSms extends SmsDriver
     /**
      * Send a single or multiple message
      *
-     * @param $phone null
+     * @param null $phone
      * @param string $message
-     * @return bool|mixed
+     * @param array $config
+     * @return bool
      */
-    public function send($phone = null, string $message = '')
+    public function send($phone = null, string $message = '', array $config = [])
     {
         if (empty($phone) || empty($message)) {
             return false;
