@@ -12,7 +12,8 @@ return [
         'smsaero' => [
             'driver' => 'smsaero',
             'login' => env('SMSAERO_SMS_LOGIN'),
-            'password' => env('SMSAERO_SMS_PASSWORD')
+            'password' => env('SMSAERO_SMS_PASSWORD'),
+            'default_sign' => ''
         ]
     ]
 ];

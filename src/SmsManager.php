@@ -5,6 +5,7 @@ namespace Neurohotep\LaravelSms;
 use Closure;
 use InvalidArgumentException;
 use Neurohotep\LaravelSms\Drivers\MtsSms;
+use Neurohotep\LaravelSms\Drivers\SmsaeroSms;
 
 class SmsManager
 {
@@ -124,6 +125,17 @@ class SmsManager
     protected function createMtsDriver(array $config)
     {
         return new MtsSms($config['login'], $config['password'], $config['user_group']);
+    }
+
+    /**
+     * Create an instance of the driver.
+     *
+     * @param array $config
+     * @return SmsaeroSms
+     */
+    protected function createSmsaeroDriver(array $config)
+    {
+        return new SmsaeroSms($config['login'], $config['password'], $config['default_sign']);
     }
 
     /**
